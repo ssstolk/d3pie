@@ -256,7 +256,9 @@ var helpers = {
 
 		var svg = d3.select(element).append("svg:svg")
 			.attr("width", canvasWidth)
-			.attr("height", canvasHeight);
+			.attr("height", canvasHeight)
+			.attr("preserveAspectRatio", "xMinYMin meet")
+			.attr("viewBox", "0 0 " + canvasWidth + " " + canvasHeight);
 
 		if (backgroundColor !== "transparent") {
 			svg.style("background-color", function() { return backgroundColor; });
@@ -573,6 +575,7 @@ var extend = function() {
 	}
 	return target;
 };
+
 	//// --------- math.js -----------
 var math = {
 
@@ -1013,7 +1016,7 @@ var labels = {
 			.attr("fill", "none")
 			.style("opacity", function(d, i) {
 				var percentage = pie.options.labels.outer.hideWhenLessThanPercentage;
-				var isHidden = (percentage !== null && d.percentage < percentage) || pie.options.data.content[i].label === "";
+				var isHidden = (percentage !== null && pie.options.data.content[i].percentage < percentage) || pie.options.data.content[i].label === "";
 				return isHidden ? 0 : 1;
 			});
 	},
@@ -1222,7 +1225,7 @@ var labels = {
 
 	isLabelHidden: function(pie, index) {
 		var percentage = pie.options.labels.outer.hideWhenLessThanPercentage;
-		return (percentage !== null && d.percentage < percentage) || pie.options.data.content[index].label === "";
+		return (percentage !== null && pie.options.data.content[index].percentage < percentage) || pie.options.data.content[index].label === "";
 	},
 
 	// does a little math to shift a label into a new position based on the last properly placed one
@@ -1340,12 +1343,12 @@ var segments = {
 				}
 				return color;
 			})
+			.attr("data-index", function(d, i) { return i; })
 			.style("stroke", segmentStroke)
 			.style("stroke-width", 1)
 			.transition()
 			.ease(d3.easeCubicInOut)
 			.duration(loadSpeed)
-			.attr("data-index", function(d, i) { return i; })
 			.attrTween("d", function(b) {
 				var i = d3.interpolate({ value: 0 }, b);
 				return function(t) {
@@ -1962,7 +1965,7 @@ var tt = {
 	};
 
 	d3pie.prototype.closeSegment = function() {
-        segments.maybeCloseOpenSegment();
+        segments.maybeCloseOpenSegment(this);
 	};
 
 	// this let's the user dynamically update aspects of the pie chart without causing a complete redraw. It

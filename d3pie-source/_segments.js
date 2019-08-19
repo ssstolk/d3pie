@@ -57,12 +57,12 @@ var segments = {
 				}
 				return color;
 			})
+			.attr("data-index", function(d, i) { return i; })
 			.style("stroke", segmentStroke)
 			.style("stroke-width", 1)
 			.transition()
 			.ease(d3.easeCubicInOut)
 			.duration(loadSpeed)
-			.attr("data-index", function(d, i) { return i; })
 			.attrTween("d", function(b) {
 				var i = d3.interpolate({ value: 0 }, b);
 				return function(t) {
@@ -204,7 +204,7 @@ var segments = {
 		}
 		pie.isOpeningSegment = true;
 
-		segments.maybeCloseOpenSegment();
+		segments.maybeCloseOpenSegment(pie);
 
 		d3.select(segment).transition()
 			.ease(segments.effectMap[pie.options.effects.pullOutSegmentOnClick.effect])
@@ -225,7 +225,7 @@ var segments = {
 			});
 	},
 
-    maybeCloseOpenSegment: function() {
+    maybeCloseOpenSegment: function(pie) {
         if (d3.selectAll("." + pie.cssPrefix + "expanded").size() > 0) {
             segments.closeSegment(pie, d3.select("." + pie.cssPrefix + "expanded").node());
         }
