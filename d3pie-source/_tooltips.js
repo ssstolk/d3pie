@@ -86,9 +86,9 @@ var tt = {
         // element won't interfere
         d3.select("#" + pie.cssPrefix + "tooltip" + tt.currentTooltip)
             .attr("transform", function(d, i) {
-                // klutzy, but it accounts for tooltip padding which could push it onscreen
-                var x = pie.options.size.canvasWidth + 1000;
-                var y = pie.options.size.canvasHeight + 1000;
+                // Move the tooltip off the screen, so that they don't accumulate at ~1000x1000 on the page
+                var x = -1000;
+                var y = -1000;
                 return "translate(" + x + "," + y + ")";
             });
     },
